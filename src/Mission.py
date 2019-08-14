@@ -12,7 +12,7 @@ class Mission:
         if start_time == end_time:
             raise warnings.warn("[Warning] Start and End time of Mission is same. It may cause unintended result!")
 
-    def is_overlap_with(self, mission: Mission): # 어떤 미션이 이 미션과 시간이 겹치는지 검사
+    def is_overlap_with(self, mission): # 어떤 미션이 이 미션과 시간이 겹치는지 검사
         if self.start_time < mission.start_time:
             if mission.start_time < self.end_time:
                 return True
@@ -22,8 +22,7 @@ class Mission:
             if self.start_time < mission.end_time:
                 return True
 
-    def is_valid(self): # 현재 미션이 유효한 미션인지 검사
-        current_time = time.time()
+    def is_valid(self, current_time): # 현재 미션이 유효한 미션인지 검사
         if self.start_time <= current_time < self.end_time:
             return True
         else:
