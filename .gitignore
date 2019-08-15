@@ -1,2 +1,4 @@
 
 .vscode/settings.json
+gym-building/gym_building.egg-info/*
+*.pyc
