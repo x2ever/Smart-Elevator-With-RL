@@ -1,6 +1,6 @@
 import numpy as np
 import warnings
-from Mission import Mission
+from .Mission import Mission
 
 class Person:
     def __init__(self, min_height, max_height):

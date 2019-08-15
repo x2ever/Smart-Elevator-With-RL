@@ -1,4 +1,4 @@
-from Lift import Lift
+from .Lift import Lift
 
 import numpy as np
 import copy
@@ -9,6 +9,8 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 
 class BuildingEnv(gym.Env):
+    metadata = {'render.modes': ['human']}
+
     def __init__(self, people, num_of_lift, height_of_building):
         self.lifts = [Lift() for i in range(num_of_lift)]
         self.time = 0
@@ -17,7 +19,7 @@ class BuildingEnv(gym.Env):
         self.inner_button = np.zeros(height_of_building * num_of_lift)
         self.outer_button = np.zeros(height_of_building)
 
-    def _step(self, action):
+    def step(self, action):
         '''
         [Time] += 1
         [Person] Check if should move or not to
@@ -139,7 +141,7 @@ class BuildingEnv(gym.Env):
 
         return new_state, reward, done
     
-    def _reset(self):
+    def reset(self):
         for person in self.people:
             person.reset()
         
@@ -150,5 +152,5 @@ class BuildingEnv(gym.Env):
         self.inner_button = np.zeros(len(self.inner_button))
         self.outer_button = np.zeros(len(self.outer_button))
 
-    def _render(self):
+    def render(self):
         pass
