@@ -22,3 +22,9 @@ class Person:
             self.missions.append(new_mission)
         else:
             raise warnings.warn("[Warning] Appending new mission failed.")
+
+    def reset(self):
+        self.current_layer = 1
+        self.target = None
+        self.on_mission = False
+        self.on_lift = False

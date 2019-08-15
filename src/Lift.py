@@ -12,3 +12,6 @@ class Lift:
 
     def delete(self, person: Person):
         self.people.remove(person)
+
+    def reset(self):
+        self.__init__()

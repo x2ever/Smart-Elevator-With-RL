@@ -2,6 +2,7 @@ from .Lift import Lift
 
 import numpy as np
 import copy
+import cv2
 
 class Building:
     def __init__(self, people, num_of_lift, height_of_building):
@@ -133,3 +134,17 @@ class Building:
                 reward -= 1
 
         return new_state, reward, done
+    
+    def _reset(self):
+        for person in self.people:
+            person.reset()
+        
+        for lift in self.lifts:
+            lift.reset()
+        
+        self.time = 0
+        self.inner_button = np.zeros(len(self.inner_button))
+        self.outer_button = np.zeros(len(self.outer_button))
+
+    def _render(self):
+        pass
