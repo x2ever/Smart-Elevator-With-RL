@@ -5,11 +5,10 @@ from .Mission import Mission
 class Person:
     def __init__(self, min_height, max_height):
         self.default_layer = np.random.randint(min_height, max_height) # 특별한 미션이 없다면 이동할 층
-        self.current_layer = 1
+        self.current_layer = 1 # None: on_lift = True
         self.target = None
         self.on_mission = False
         self.on_lift = False
-        self.count = 0
         self.missions = list()
 
     def add_mission(self, new_mission: Mission):
