@@ -1,6 +1,5 @@
 from src.Mission import Mission
 from src.Person import Person
-from src.Building import Building
 
 import gym
 
