@@ -28,7 +28,7 @@ def callback(_locals, _globals):
     :param _globals: (dict)
     """
     global best_mean_reward, n_steps
-    if (n_steps + 1) % 3000 == 0:
+    if (n_steps + 1) % 30000 == 0:
         x, y = ts2xy(load_results(log_directory), 'timesteps')
         if len(x) > 0:
             mean_reward = numpy.mean(y[-100:])
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         policy=LnMlpPolicy,
         verbose=1,
         tensorboard_log="./dqn_tensorboard/",
-        batch_size = 2048
+        batch_size = 4096
     )
 
     model.learn(
