@@ -2,3 +2,6 @@
 .vscode/settings.json
 gym-building/gym_building.egg-info/*
 *.pyc
+model/dqn/dqn-models/*
+model/dqn/dqn-log/*
+dqn_tensorboard/*
