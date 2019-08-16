@@ -44,7 +44,7 @@ class BuildingEnv(gym.Env):
         done = False
         
         # [Time] += 1
-        self.time += 300
+        self.time += 3
         if self.time >= 24 * 60 * 60:
             done = True
 
