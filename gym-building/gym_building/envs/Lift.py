@@ -10,7 +10,7 @@ class Lift:
     def append(self, person: Person):
         self.people.append(person)
 
-    def delete(self, person: Person):
+    def remove(self, person: Person):
         self.people.remove(person)
 
     def reset(self):
