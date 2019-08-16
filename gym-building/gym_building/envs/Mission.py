@@ -1,6 +1,5 @@
 import numpy as np
 import warnings
-import time
 
 # 빌딩 내의 사람들이 주기적으로 수행할 미션 (회의, 식사시간 등등)
 
