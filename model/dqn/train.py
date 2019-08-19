@@ -13,7 +13,7 @@ import sys
 sys.path.append(".")
 from model.setting import people
 
-TIMESTEPS = 10000001
+TIMESTEPS = 10000000001
 
 best_mean_reward = -numpy.inf
 n_steps = 0
@@ -28,7 +28,7 @@ def callback(_locals, _globals):
     :param _globals: (dict)
     """
     global best_mean_reward, n_steps
-    if (n_steps + 1) % 30000 == 0:
+    if (n_steps + 1) % 20000 == 0:
         x, y = ts2xy(load_results(log_directory), 'timesteps')
         if len(x) > 0:
             mean_reward = numpy.mean(y[-100:])
@@ -57,10 +57,13 @@ if __name__ == "__main__":
         env=env,
         policy=LnMlpPolicy,
         verbose=1,
+        batch_size=16,
         tensorboard_log="./dqn_tensorboard/",
-        batch_size = 4096
     )
-
+    '''
+    model = DQN.load(model_directory + "dqn-model_15000.pkl")
+    model.set_env(env=env)
+    '''
     model.learn(
         total_timesteps=TIMESTEPS,
         callback=callback
