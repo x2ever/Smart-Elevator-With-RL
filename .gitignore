@@ -5,3 +5,9 @@ gym-building/gym_building.egg-info/*
 model/dqn/dqn-models/*
 model/dqn/dqn-log/*
 dqn_tensorboard/*
+*.pkl
+a2c_tensorboard/*
+model/a2c/a2c-models/*
+model/a2c/a2c-log/*
+model/acer/acer-models/*
+model/acer/acer-log/*
