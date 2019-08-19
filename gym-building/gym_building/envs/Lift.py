@@ -3,7 +3,7 @@ from .Person import Person
 class Lift:
     def __init__(self):
         self.people = list()
-        self.max = 10
+        self.max = 15
         self.layer = 1
         self.is_open = False
     

@@ -44,7 +44,7 @@ class BuildingEnv(gym.Env):
         done = False
         
         # [Time] += 1
-        self.time += 3
+        self.time += 5
         if self.time >= 24 * 60 * 60:
             done = True
 
@@ -73,22 +73,22 @@ class BuildingEnv(gym.Env):
             action //= 5
             if descrypted_action == 0:
                 if self.height == lift.layer or lift.is_open:
-                    reward -= 1
+                    reward -= 0.01
                 else:
                     lift.layer += 1
             elif descrypted_action == 1:
                 if 0 == lift.layer or lift.is_open:
-                    reward -= 1
+                    reward -= 0.01
                 else:
                     lift.layer -= 1
             elif descrypted_action == 2:
                 if lift.is_open:
-                    reward -= 1
+                    reward -= 0.01
                 else:
                     lift.is_open = True
             elif descrypted_action == 3:
                 if not lift.is_open:
-                    reward -= 1
+                    reward -= 0.01
                 else:
                     lift.is_open = False
             else:
@@ -175,6 +175,11 @@ class BuildingEnv(gym.Env):
         self.outer_button = np.zeros(len(self.outer_button))
         self.open_state = np.zeros(len(self.open_state))
         self.position_state = np.zeros(len(self.position_state))
+        
+        time_state = np.array([self.time])
+        state = np.concatenate((time_state, self.inner_button, self.outer_button, self.open_state, self.position_state))
+
+        return state
 
     def render(self):
         pass
