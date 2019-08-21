@@ -40,7 +40,7 @@ if __name__ == "__main__":
     os.makedirs(log_directory, exist_ok=True)
     os.makedirs(model_directory, exist_ok=True)
 
-    env = SubprocVecEnv([lambda: Monitor(gym.make('gym_building:building-v0', people=people, num_of_lift=3, height_of_building=5), log_directory, allow_early_resets=True) for i in range(4)])
+    env = SubprocVecEnv([lambda: Monitor(gym.make('gym_building:building-v0', people=people, num_of_lift=3, height_of_building=5), log_directory, allow_early_resets=True) for i in range(32)])
 
     model = A2C(
         env=env,
@@ -52,8 +52,8 @@ if __name__ == "__main__":
         n_steps=25
     )
 
-    model = A2C.load(model_directory + "a2c-model_55000.pkl")
-    model.set_env(env=env)
+    # model = A2C.load(model_directory + "a2c-model_55000.pkl")
+    # model.set_env(env=env)
 
     model.learn(
         total_timesteps=TIMESTEPS,

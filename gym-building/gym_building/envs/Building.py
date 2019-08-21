@@ -22,7 +22,7 @@ class BuildingEnv(gym.Env):
         self.position_state = np.zeros(num_of_lift)
 
         self.action_space = spaces.Discrete(5 ** num_of_lift)
-        self.observation_space = spaces.Box(low=0, high=86400, shape=(1 + num_of_lift * height_of_building + height_of_building + 2 * num_of_lift, ))
+        self.observation_space = spaces.Box(low=0, high=1, shape=(1 + num_of_lift * height_of_building + height_of_building + 2 * num_of_lift, ))
 
     def step(self, action):
         '''
@@ -77,7 +77,7 @@ class BuildingEnv(gym.Env):
                 else:
                     lift.layer += 1
             elif descrypted_action == 1:
-                if 0 == lift.layer or lift.is_open:
+                if 1 == lift.layer or lift.is_open:
                     reward -= 0.01
                 else:
                     lift.layer -= 1
@@ -104,6 +104,7 @@ class BuildingEnv(gym.Env):
                     person.on_mission = False
                     person.target = None
                     lift.remove(person)
+                    reward += 100
 
         # [Lift] People in
         for person in self.people:
@@ -113,6 +114,7 @@ class BuildingEnv(gym.Env):
                     if len(lift.people) == lift.max:
                         pass
                     elif lift.layer == person.current_layer and lift.is_open:
+                        reward += 50
                         lift.append(person)
                         person.on_lift = True
                         person.current_layer = None
@@ -149,19 +151,22 @@ class BuildingEnv(gym.Env):
             self.position_state[i] = lift.layer
 
 
-        new_state = np.concatenate((time_state, self.inner_button, self.outer_button, self.open_state, self.position_state))
+        new_state = np.concatenate((time_state / (24 * 60 * 60), self.inner_button, self.outer_button, self.open_state, self.position_state / self.height))
 
         # [Person] Update reward
         for person in self.people:
             if person.on_mission:
                 reward -= 1
+            
+            if person.on_mission and person.on_lift:
+                reward += 0.2
         
         if self.time % (60 * 60) == 30 * 60:
             #self._print()
             # print(new_state)
             pass
 
-        return new_state, reward, done, {}
+        return new_state, reward / (50 * 24 * 60 / 5), done, {}
     
     def reset(self):
         for person in self.people:
@@ -177,7 +182,7 @@ class BuildingEnv(gym.Env):
         self.position_state = np.zeros(len(self.position_state))
         
         time_state = np.array([self.time])
-        state = np.concatenate((time_state, self.inner_button, self.outer_button, self.open_state, self.position_state))
+        state = np.concatenate((time_state / (24 * 60 * 60), self.inner_button, self.outer_button, self.open_state, self.position_state / self.height))
 
         return state
 
