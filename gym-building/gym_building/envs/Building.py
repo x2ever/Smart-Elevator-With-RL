@@ -21,9 +21,12 @@ class BuildingEnv(gym.Env):
         self.outer_button = np.zeros(height_of_building)
         self.open_state = np.zeros(num_of_lift)
         self.position_state = np.zeros(num_of_lift)
-        self.default_img = np.zeros((100 * self.height, 60 + num_of_lift * 100, 3), np.uint8)
+        self.default_img = np.zeros((100 * self.height + 50, 60 + num_of_lift * 100, 3), np.uint8)
         self.default_img = cv2.rectangle(self.default_img, (0, 0), (60, height_of_building * 100), (150, 150, 100), -1)
         self.default_img = cv2.rectangle(self.default_img, (0, 0), (60, height_of_building * 100), (255, 255, 255), 2)
+        self.default_img = cv2.rectangle(self.default_img, (0, self.height * 100), (60 + 100 * num_of_lift, 50 + self.height * 100), (100, 200, 100), -1)
+        self.default_img = cv2.rectangle(self.default_img, (0, self.height * 100), (60 + 100 * num_of_lift, 50 + self.height * 100), (255, 255, 255), 2)
+        cv2.putText(self.default_img, 'Time: ', (0, self.height * 100 + 40), self.FONT, 0.6, (0,0,200), 1)
         for i in range(height_of_building):
             self.default_img = cv2.line(self.default_img, (0, 100 * i), (60, 100 * i), (255, 255, 255), 2)
             cv2.putText(self.default_img, '%d F' % (height_of_building - i), (5, 20 + i * 100), self.FONT, 0.5, (255, 255, 255), 1)
@@ -238,6 +241,7 @@ class BuildingEnv(gym.Env):
                 cv2.putText(img, 'Num:', (95 + i * 100, 45 + 100 * int(self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
                 cv2.putText(img, '%d' % (lift_list[i][0]), (105 + i * 100, 60 + 100 * int(self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
 
+        cv2.putText(img, '%02d:%02d' % (self.time // 3600, (self.time - 3600 * (self.time // 3600)) // 60), (80, self.height * 100 + 40), self.FONT, 0.6, (0,0,200), 1)
         return img
 
     def _print(self):
