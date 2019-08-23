@@ -12,11 +12,11 @@
 
 ## Installation
 
-`Install stable-baselines`
+__Install stable-baselines__
 
 - Follow the instruction in this [document](https://stable-baselines.readthedocs.io/en/master/guide/install.html)
 
-`Install Gym env`
+__Install Gym env__
 
     cd Smart-Elevator-With-RL
     python -m pip install -e gym-building
