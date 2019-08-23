@@ -64,16 +64,20 @@ class BuildingEnv(gym.Env):
             if person.on_mission: # 미션 중인 사람은 넘어감
                 pass
             else: # 미션중이 아니면
+                default = True
                 for mission in person.missions:
                     if mission.is_valid(self.time):
+                        default = False
+                        person.target = mission.target
                         if mission.target != person.current_layer:
                             person.on_mission = True
                             person.target = mission.target
-
+                        
                         break
 
+
                 # 여전히 할당받은 미션이 없다면
-                if not person.on_mission:
+                if default:
                     if person.default_layer != person.current_layer: # Default 층에 있는지 확인
                         person.on_mission = True
                         person.target = person.default_layer
@@ -119,7 +123,7 @@ class BuildingEnv(gym.Env):
 
         # [Lift] People in
         for person in self.people:
-            if person.on_mission and not person.on_lift:
+            if person.on_mission and (not person.on_lift) and person.target != person.current_layer and person.target is not None:
                 for lift in self.lifts:
                     # [Lift] Check if lift is full
                     if len(lift.people) == lift.max:
@@ -173,8 +177,7 @@ class BuildingEnv(gym.Env):
                 reward += 0.2
         
         if self.time % (60 * 60) == 30 * 60:
-            #self._print()
-            # print(new_state)
+            # self._print()
             pass
 
         return new_state, reward / (50 * 24 * 60 / 5), done, {}
@@ -197,8 +200,8 @@ class BuildingEnv(gym.Env):
 
         return state
 
-    def render(self):
-        img = self.default_img
+    def render(self, mode='rgb_array', close=False):
+        img = copy.deepcopy(self.default_img)
         floor_list = np.zeros((self.height, 2))
         lift_list = np.zeros((len(self.lifts), 3))
 
@@ -222,18 +225,20 @@ class BuildingEnv(gym.Env):
             cv2.putText(img, '%d' % (floor_list[h][0]), (25, (self.height - h - 1) * 100 + 55), self.FONT, 0.4, (255, 0, 100), 1)
             cv2.putText(img, '%d' % (floor_list[h][1]), (25, (self.height - h - 1) * 100 + 85), self.FONT, 0.4, (0, 0, 255), 1)
 
-        for i, _ in enumerate(self.lifts):
-            img = cv2.rectangle(img, (60 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (160 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (100, 150, 150), -1)
-            img = cv2.rectangle(img, (60 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (160 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (255, 255, 255), 2)
+        for i, lift in enumerate(self.lifts):
+            img = cv2.rectangle(img, (60 + i * 100, 0 + 100 * int(self.height - lift_list[i][1] - 1)), (160 + i * 100, 100 + 100 * int(self.height - lift_list[i][1] - 1)), (100, 150, 150), -1)
+            img = cv2.rectangle(img, (60 + i * 100, 0 + 100 * int(self.height - lift_list[i][1] - 1)), (160 + i * 100, 100 + 100 * int(self.height - lift_list[i][1] - 1)), (255, 255, 255), 2)
             if lift_list[i][2]:
-                img = cv2.rectangle(img, (80 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (140 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (10, 50, 50), -1)
-                img = cv2.rectangle(img, (80 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (140 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (255, 255, 255), 2)
+                img = cv2.rectangle(img, (80 + i * 100, 0 + 100 * int(self.height - lift_list[i][1] - 1)), (140 + i * 100, 100 + 100 * int(self.height - lift_list[i][1] - 1)), (10, 50, 50), -1)
+                img = cv2.rectangle(img, (80 + i * 100, 0 + 100 * int(self.height - lift_list[i][1] - 1)), (140 + i * 100, 100 + 100 * int(self.height - lift_list[i][1] - 1)), (255, 255, 255), 2)
 
-            cv2.putText(img, 'Num:', (95 + i * 100, 45 + 100 * (self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
-            cv2.putText(img, '%d' % (lift_list[i][0]), (105 + i * 100, 60 + 100 * (self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
+                cv2.putText(img, 'Num:', (95 + i * 100, 45 + 100 * int(self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (255, 255, 255), 1)
+                cv2.putText(img, '%d' % (lift_list[i][0]), (105 + i * 100, 60 + 100 * int(self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (255, 255, 255), 1)
+            else:
+                cv2.putText(img, 'Num:', (95 + i * 100, 45 + 100 * int(self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
+                cv2.putText(img, '%d' % (lift_list[i][0]), (105 + i * 100, 60 + 100 * int(self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
 
-        cv2.imshow('Building',img)
-        cv2.waitKey(0.1)
+        return img
 
     def _print(self):
         

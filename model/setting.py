@@ -3,7 +3,7 @@ from src.Person import Person
 
 import gym
 
-people = [Person(4, 5) for i in range(50)] # 2 ~ 5층에서 일하는 50명의 사람
+people = [Person(4, 4) for i in range(25)] + [Person(5, 5) for i in range(25)]# 2 ~ 5층에서 일하는 50명의 사람
 breakfast = Mission(2, 7.5 * 60 * 60, 8.5 * 60 * 60) # 아침식사
 morning_conference = Mission(3, 9 * 60 * 60, 10 * 60 * 60) # 아침회의
 lunch = Mission(2, 13 * 60 * 60, 14 * 60 * 60) # 점심식사
