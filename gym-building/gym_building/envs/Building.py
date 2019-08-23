@@ -10,6 +10,7 @@ from gym.utils import seeding
 
 class BuildingEnv(gym.Env):
     metadata = {'render.modes': ['human']}
+    FONT = cv2.FONT_HERSHEY_SIMPLEX
 
     def __init__(self, people, num_of_lift, height_of_building):
         self.lifts = [Lift() for i in range(num_of_lift)]
@@ -20,6 +21,16 @@ class BuildingEnv(gym.Env):
         self.outer_button = np.zeros(height_of_building)
         self.open_state = np.zeros(num_of_lift)
         self.position_state = np.zeros(num_of_lift)
+        self.default_img = np.zeros((100 * self.height, 60 + num_of_lift * 100, 3), np.uint8)
+        self.default_img = cv2.rectangle(self.default_img, (0, 0), (60, height_of_building * 100), (150, 150, 100), -1)
+        self.default_img = cv2.rectangle(self.default_img, (0, 0), (60, height_of_building * 100), (255, 255, 255), 2)
+        for i in range(height_of_building):
+            self.default_img = cv2.line(self.default_img, (0, 100 * i), (60, 100 * i), (255, 255, 255), 2)
+            cv2.putText(self.default_img, '%d F' % (height_of_building - i), (5, 20 + i * 100), self.FONT, 0.5, (255, 255, 255), 1)
+            cv2.putText(self.default_img, 'Stay:', (5, 40 + i * 100), self.FONT, 0.4, (255, 0, 100), 1)
+            # cv2.putText(self.default_img, '30', (25, 55), self.FONT, 0.4, (255, 0, 100), 1)
+            cv2.putText(self.default_img, 'Moving:', (5, 70 + i * 100), self.FONT, 0.4, (0, 0, 255), 1)
+            # cv2.putText(self.default_img, '30', (25, 85), self.FONT, 0.4, (0, 0, 255), 1)
 
         self.action_space = spaces.Discrete(5 ** num_of_lift)
         self.observation_space = spaces.Box(low=0, high=1, shape=(1 + num_of_lift * height_of_building + height_of_building + 2 * num_of_lift, ))
@@ -187,7 +198,42 @@ class BuildingEnv(gym.Env):
         return state
 
     def render(self):
-        pass
+        img = self.default_img
+        floor_list = np.zeros((self.height, 2))
+        lift_list = np.zeros((len(self.lifts), 3))
+
+        for person in self.people:
+            if not person.on_lift and not person.on_mission:
+                floor_list[person.current_layer - 1][0] += 1
+            
+            if not person.on_lift and person.on_mission:
+                floor_list[person.current_layer - 1][1] += 1
+
+        for i, lift in enumerate(self.lifts):
+            lift_list[i][0] = len(lift.people)
+            lift_list[i][1] = lift.layer - 1
+
+            if lift.is_open:
+                lift_list[i][2] = True
+            else:
+                lift_list[i][2] = False
+
+        for h in range(self.height):
+            cv2.putText(img, '%d' % (floor_list[h][0]), (25, (self.height - h - 1) * 100 + 55), self.FONT, 0.4, (255, 0, 100), 1)
+            cv2.putText(img, '%d' % (floor_list[h][1]), (25, (self.height - h - 1) * 100 + 85), self.FONT, 0.4, (0, 0, 255), 1)
+
+        for i, _ in enumerate(self.lifts):
+            img = cv2.rectangle(img, (60 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (160 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (100, 150, 150), -1)
+            img = cv2.rectangle(img, (60 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (160 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (255, 255, 255), 2)
+            if lift_list[i][2]:
+                img = cv2.rectangle(img, (80 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (140 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (10, 50, 50), -1)
+                img = cv2.rectangle(img, (80 + i * 100, 0 + 100 * (self.height - lift_list[i][1] - 1)), (140 + i * 100, 100 + 100 * (self.height - lift_list[i][1] - 1)), (255, 255, 255), 2)
+
+            cv2.putText(img, 'Num:', (95 + i * 100, 45 + 100 * (self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
+            cv2.putText(img, '%d' % (lift_list[i][0]), (105 + i * 100, 60 + 100 * (self.height - lift_list[i][1] - 1)), self.FONT, 0.4, (0, 0, 0), 1)
+
+        cv2.imshow('Building',img)
+        cv2.waitKey(0.1)
 
     def _print(self):
         
