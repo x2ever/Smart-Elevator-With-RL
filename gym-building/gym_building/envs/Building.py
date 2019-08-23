@@ -91,26 +91,26 @@ class BuildingEnv(gym.Env):
             action //= 5
             if descrypted_action == 0:
                 if self.height == lift.layer or lift.is_open:
-                    reward -= 0.01
+                    reward -= 0.5
                 else:
                     lift.layer += 1
             elif descrypted_action == 1:
                 if 1 == lift.layer or lift.is_open:
-                    reward -= 0.01
+                    reward -= 1
                 else:
                     lift.layer -= 1
             elif descrypted_action == 2:
                 if lift.is_open:
-                    reward -= 0.01
+                    reward -= 1
                 else:
                     lift.is_open = True
             elif descrypted_action == 3:
                 if not lift.is_open:
-                    reward -= 0.01
+                    reward -= 1
                 else:
                     lift.is_open = False
             else:
-                pass
+                reward += 0.05
 
         # [Lift] People out
         for lift in self.lifts:
@@ -174,10 +174,10 @@ class BuildingEnv(gym.Env):
         # [Person] Update reward
         for person in self.people:
             if person.on_mission:
-                reward -= 1
+                reward -= 1.5
             
             if person.on_mission and person.on_lift:
-                reward += 0.2
+                reward += 0.3
         
         if self.time % (60 * 60) == 30 * 60:
             # self._print()

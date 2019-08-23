@@ -16,7 +16,7 @@ from model.setting import people
 TIMESTEPS = 10000000001
 
 best_mean_reward = -numpy.inf
-n_steps = 550000
+n_steps = 0
 log_directory = os.path.dirname(os.path.realpath(__file__)) + "/a2c-log/"
 model_directory = os.path.dirname(os.path.realpath(__file__)) + "/a2c-models/"
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     os.makedirs(log_directory, exist_ok=True)
     os.makedirs(model_directory, exist_ok=True)
 
-    env = SubprocVecEnv([lambda: Monitor(gym.make('gym_building:building-v0', people=people, num_of_lift=3, height_of_building=5), log_directory, allow_early_resets=True) for i in range(32)])
+    env = SubprocVecEnv([lambda: Monitor(gym.make('gym_building:building-v0', people=people, num_of_lift=2, height_of_building=5), log_directory, allow_early_resets=True) for i in range(32)])
 
     model = A2C(
         env=env,
