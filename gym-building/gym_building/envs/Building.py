@@ -21,6 +21,7 @@ class BuildingEnv(gym.Env):
         self.outer_button = np.zeros(height_of_building)
         self.open_state = np.zeros(num_of_lift)
         self.position_state = np.zeros(num_of_lift)
+        self.inner_person_state = np.zeros(num_of_lift)
         self.default_img = np.zeros((100 * self.height + 50, 60 + num_of_lift * 100, 3), np.uint8)
         self.default_img = cv2.rectangle(self.default_img, (0, 0), (60, height_of_building * 100), (150, 150, 100), -1)
         self.default_img = cv2.rectangle(self.default_img, (0, 0), (60, height_of_building * 100), (255, 255, 255), 2)
@@ -36,7 +37,7 @@ class BuildingEnv(gym.Env):
             # cv2.putText(self.default_img, '30', (25, 85), self.FONT, 0.4, (0, 0, 255), 1)
 
         self.action_space = spaces.Discrete(5 ** num_of_lift)
-        self.observation_space = spaces.Box(low=0, high=1, shape=(1 + num_of_lift * height_of_building + height_of_building + 2 * num_of_lift, ))
+        self.observation_space = spaces.Box(low=0, high=1, shape=(1 + num_of_lift * height_of_building + height_of_building + 3 * num_of_lift, ))
 
     def step(self, action):
         '''
@@ -144,6 +145,7 @@ class BuildingEnv(gym.Env):
         self.outer_button = np.zeros(len(self.outer_button))
         self.open_state = np.zeros(len(self.open_state))
         self.position_state = np.zeros(len(self.position_state))
+        self.inner_person_state = np.zeros(len(self.inner_person_state))
 
         # [Buidling] Inner
         padding = 0
@@ -163,13 +165,14 @@ class BuildingEnv(gym.Env):
 
         # [Lift] Open and position state
         for i, lift in enumerate(self.lifts):
+            self.inner_person_state[i] = len(lift.people) / lift.max
             if lift.is_open:
                 self.open_state[i] = 1
             
             self.position_state[i] = lift.layer
 
 
-        new_state = np.concatenate((time_state / (24 * 60 * 60), self.inner_button, self.outer_button, self.open_state, self.position_state / self.height))
+        new_state = np.concatenate((time_state / (24 * 60 * 60), self.inner_button, self.outer_button, self.open_state, self.position_state / self.height, self.inner_person_state))
 
         # [Person] Update reward
         for person in self.people:
@@ -197,9 +200,10 @@ class BuildingEnv(gym.Env):
         self.outer_button = np.zeros(len(self.outer_button))
         self.open_state = np.zeros(len(self.open_state))
         self.position_state = np.zeros(len(self.position_state))
+        self.inner_person_state = np.zeros(len(self.inner_person_state))
         
         time_state = np.array([self.time])
-        state = np.concatenate((time_state / (24 * 60 * 60), self.inner_button, self.outer_button, self.open_state, self.position_state / self.height))
+        state = np.concatenate((time_state / (24 * 60 * 60), self.inner_button, self.outer_button, self.open_state, self.position_state / self.height, self.inner_person_state))
 
         return state
 

@@ -16,7 +16,7 @@ from model.setting import people
 TIMESTEPS = 10000000001
 
 best_mean_reward = -numpy.inf
-n_steps = 315000
+n_steps = 0
 log_directory = os.path.dirname(os.path.realpath(__file__)) + "/ppo2-log/"
 model_directory = os.path.dirname(os.path.realpath(__file__)) + "/ppo2-models/"
 
@@ -28,7 +28,7 @@ def callback(_locals, _globals):
     :param _globals: (dict)
     """
     global best_mean_reward, n_steps
-    if (n_steps + 1) % 5000 == 0:
+    if (n_steps + 1) % 1000 == 0:
         print("Saving new best model")
         _locals['self'].save(
             model_directory + 'ppo2-model_' + str(n_steps + 1) + '.pkl')

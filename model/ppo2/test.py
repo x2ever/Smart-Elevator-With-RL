@@ -17,7 +17,7 @@ model_directory = os.path.dirname(os.path.realpath(__file__)) + "/ppo2-models/"
 n_cpu = 1
 env = SubprocVecEnv([lambda: gym.make('gym_building:building-v0', people=people, num_of_lift=2, height_of_building=5) for i in range(1)])
 
-model = PPO2.load(model_directory + "ppo2-model_330000.pkl")
+model = PPO2.load(model_directory + "ppo2-model_320000.pkl")
 
 obs = env.reset()
 
