@@ -11,3 +11,6 @@ model/a2c/a2c-models/*
 model/a2c/a2c-log/*
 model/acer/acer-models/*
 model/acer/acer-log/*
+ppo2_tensorboard/*
+model/ppo2/ppo2-models/*
+model/ppo2/ppo2-log/*

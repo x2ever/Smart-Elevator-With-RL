@@ -91,7 +91,7 @@ class BuildingEnv(gym.Env):
             action //= 5
             if descrypted_action == 0:
                 if self.height == lift.layer or lift.is_open:
-                    reward -= 0.5
+                    reward -= 1
                 else:
                     lift.layer += 1
             elif descrypted_action == 1:
@@ -110,7 +110,7 @@ class BuildingEnv(gym.Env):
                 else:
                     lift.is_open = False
             else:
-                reward += 0.05
+                reward += 0.01
 
         # [Lift] People out
         for lift in self.lifts:
@@ -122,7 +122,7 @@ class BuildingEnv(gym.Env):
                     person.on_mission = False
                     person.target = None
                     lift.remove(person)
-                    reward += 100
+                    reward += 50
 
         # [Lift] People in
         for person in self.people:
@@ -132,7 +132,7 @@ class BuildingEnv(gym.Env):
                     if len(lift.people) == lift.max:
                         pass
                     elif lift.layer == person.current_layer and lift.is_open:
-                        reward += 50
+                        reward += 10
                         lift.append(person)
                         person.on_lift = True
                         person.current_layer = None
@@ -177,7 +177,7 @@ class BuildingEnv(gym.Env):
                 reward -= 1.5
             
             if person.on_mission and person.on_lift:
-                reward += 0.3
+                reward += 0.7
         
         if self.time % (60 * 60) == 30 * 60:
             # self._print()
