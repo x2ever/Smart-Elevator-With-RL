@@ -16,7 +16,7 @@ from model.setting import people
 TIMESTEPS = 10000000001
 
 best_mean_reward = -numpy.inf
-n_steps = 0
+n_steps = 18000
 log_directory = os.path.dirname(os.path.realpath(__file__)) + "/ppo2-log/"
 model_directory = os.path.dirname(os.path.realpath(__file__)) + "/ppo2-models/"
 
@@ -50,10 +50,10 @@ if __name__ == "__main__":
         full_tensorboard_log=True,
         n_steps=25
     )
-    '''
-    model = PPO2.load(model_directory + "ppo2-model_335000.pkl")
+    
+    model = PPO2.load(model_directory + "ppo2-model_24000.pkl")
     model.set_env(env=env)
-    '''
+    
     model.learn(
         total_timesteps=TIMESTEPS,
         callback=callback

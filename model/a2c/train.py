@@ -16,7 +16,7 @@ from model.setting import people
 TIMESTEPS = 10000000001
 
 best_mean_reward = -numpy.inf
-n_steps = 315000
+n_steps = 0
 log_directory = os.path.dirname(os.path.realpath(__file__)) + "/a2c-log/"
 model_directory = os.path.dirname(os.path.realpath(__file__)) + "/a2c-models/"
 
@@ -51,10 +51,10 @@ if __name__ == "__main__":
         full_tensorboard_log=True,
         n_steps=25
     )
-
+    '''
     model = A2C.load(model_directory + "a2c-model_335000.pkl")
     model.set_env(env=env)
-
+    '''
     model.learn(
         total_timesteps=TIMESTEPS,
         callback=callback

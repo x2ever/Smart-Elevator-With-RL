@@ -111,7 +111,7 @@ class BuildingEnv(gym.Env):
                 else:
                     lift.is_open = False
             else:
-                reward += 0.01
+                reward += 0.0001
 
         # [Lift] People out
         for lift in self.lifts:
@@ -123,7 +123,7 @@ class BuildingEnv(gym.Env):
                     person.on_mission = False
                     person.target = None
                     lift.remove(person)
-                    reward += 50
+                    reward += 200
 
         # [Lift] People in
         for person in self.people:
@@ -133,7 +133,7 @@ class BuildingEnv(gym.Env):
                     if len(lift.people) == lift.max:
                         pass
                     elif lift.layer == person.current_layer and lift.is_open:
-                        reward += 10
+                        reward += 100
                         lift.append(person)
                         person.on_lift = True
                         person.current_layer = None
